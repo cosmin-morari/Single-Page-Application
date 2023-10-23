@@ -16,8 +16,6 @@ class SpaController extends Controller
 
         if ($request->accepts(['text/html', 'application/json'])) {
             return response()->json($products);
-        }else{
-            return view('singlePageApp');
         }
         
     }
