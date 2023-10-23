@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Document</title>
+    <title>{{ trans('messages.index') }}</title>
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
 </head>
+
 <body>
     <!-- The index page -->
     <div class="page index">
         <!-- The index element where the products list is rendered -->
-        <table class="list"></table>
-
+        <table border="1" class="list"></table>
         <!-- A link to go to the cart by changing the hash -->
         <a href="#cart" class="button">Go to cart</a>
     </div>
@@ -26,64 +29,57 @@
     </div>
 </body>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <!-- Custom JS script -->
-<script type="text/javascript">         
-    $(document).ready(function () {
-        console.log('a')
-        
-        /**
-        * A function that takes a products array and renders it's html
-        * 
-        * The products array must be in the form of
-        * [{
-        *     "title": "Product 1 title",
-        *     "description": "Product 1 desc",
-        *     "price": 1
-        * },{
-        *     "title": "Product 2 title",
-        *     "description": "Product 2 desc",
-        *     "price": 2
-        * }]
-        */
+<script type="text/javascript">
+    $(document).ready(function() {
+
         function renderList(products) {
             html = [
                 '<tr>',
-                    '<th>Title</th>',
-                    '<th>Description</th>',
-                    '<th>Price</th>',
+                "<th>{{ trans('messages.image') }}</th>",
+                "<th>{{ trans('messages.title') }}</th>",
+                "<th>{{ trans('messages.description') }}</th>",
+                "<th>{{ trans('messages.price') }}</th>",
+                "<th>{{ trans('messages.action') }}</th>",
                 '</tr>'
             ].join('');
-            
-            $.each(products, function (key, product) {
+
+            $.each(products, function(key, product) {
                 html += [
+
                     '<tr>',
-                        '<td>' + product.title + '</td>',                       
-                        '<td>' + product.description + '</td>',                       
-                        '<td>' + product.price + '</td>',                       
-                    '</tr>'                        
+                    '<form action="{{ route('addToCart', ['product.imageSource']) }}" method="POST">',
+                    '<td><img src="{{ asset('storage/photos/') }}/' + product.imageSource +
+                    '"></td>',
+                    '<td>' + product.title + '</td>',
+                    '<td>' + product.description + '</td>',
+                    '<td>' + product.price + '</td>',
+                    '<td> <button type="submit" class="addToCartBtn">{{ trans('messages.add') }}</button> </td>', 
+                    '</form>',
+                    '</tr>'
                 ].join('');
             });
-            
+
             return html;
         }
-        
+
         /**
-        * URL hash change handler
-        */
-        window.onhashchange = function () {
+         * URL hash change handler
+         */
+        window.onhashchange = function() {
             // First hide all the pages
             $('.page').hide();
 
-            switch(window.location.hash) {
+            switch (window.location.hash) {
                 case '#cart':
                     // Show the cart page
                     $('.cart').show();
                     // Load the cart products from the server
                     $.ajax('/cart', {
                         dataType: 'json',
-                        success: function (response) {
+                        success: function(response) {
                             // Render the products in the cart list
                             $('.cart .list').html(renderList(response));
                         }
@@ -94,20 +90,21 @@
                     // Show the index page
                     $('.index').show();
                     // Load the index products from the server
-                    $.ajax( {
-                        url: "{!! route('singlePageApp') !!}",
+                    $.ajax({
+                        url: "{{ route('index') }}",
                         type: 'GET',
                         dataType: 'json',
-                        success: function (response) {
+                        success: function(response) {
                             // Render the products in the index list
                             $('.index .list').html(renderList(response));
                         }
-                    }); 
+                    });
                     break;
             }
         }
-        
+
         window.onhashchange();
     });
 </script>
+
 </html>

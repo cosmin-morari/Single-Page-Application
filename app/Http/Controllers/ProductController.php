@@ -14,11 +14,12 @@ use App\Http\Requests\ValidateEditProduct;
 class ProductController extends Controller
 {
     use AuthorizesRequests, ValidatesRequests;
-    public function index()
+    public function index(Request $request)
     {
         $cartSession = session()->get('cart');
         $products = ($cartSession) ? Product::whereNotIn('id', $cartSession)->get() : Product::all();
-        return view('index', ['allProducts' => $products]);
+        
+        return $request->isXmlHttpRequest() ? response()->json($products) : view('index', ['allProducts' => $products]);
     }
 
     public function cart()

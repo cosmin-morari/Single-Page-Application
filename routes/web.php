@@ -41,4 +41,6 @@ Route::group(['middleware' => ['customAuth']], function () {
 });
 
 // SPA
-Route::get('/singlePageApp', [SpaController::class, 'getProducts'])->name('singlePageApp');
+Route::get('/singlePageApp', function(){
+    return view('singlePageApp');
+});
