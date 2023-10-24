@@ -19,10 +19,10 @@ class ProductController extends Controller
         $cartSession = session()->get('cart');
         $products = ($cartSession) ? Product::whereNotIn('id', $cartSession)->get() : Product::all();
         
-        return $request->isXmlHttpRequest() ? response()->json($products) : view('index', ['allProducts' => $products]);
+        return $request->ajax() ? response()->json($products) : view('index', ['allProducts' => $products]);
     }
 
-    public function cart()
+    public function cart(Request $request)
     {
         $cartSession = session()->get('cart');
         $cartQuantity = session()->get('cartQuantity');
@@ -30,13 +30,13 @@ class ProductController extends Controller
             $products = Product::whereIn('id', $cartSession)->get();
 
             if ($products) {
-                return view('cart', ['products' =>  $products, 'mail' => false, 'cartQuantity' => $cartQuantity]);
+                return $request->ajax() ? response()->json($products) : view('cart', ['products' =>  $products, 'mail' => false, 'cartQuantity' => $cartQuantity]);
             }
         } else {
             return view('cart', ['mail' => false, 'empty' =>  trans('messages.emptyCart')]);
         }
     }
-    public function store($id)
+    public function store(Request $request, $id)
     {
         $product = Product::findOrFail($id);
 
@@ -49,7 +49,7 @@ class ProductController extends Controller
         }
         return redirect()->back();
     }
-    public function cartCheckout(ValidateQuantity $request, $id)
+    public function cartCheckout(Request $request, $id)
     {
         $quantity = $request->input('quantity');
         $cartQuantity = session('cartQuantity');
@@ -63,7 +63,7 @@ class ProductController extends Controller
             session()->put('cartQuantity', $cartQuantity);
         }
 
-        if ($request->input('delete')) {
+        if ($request->input('delete') || $request->ajax()) {
             $cartSession = session()->get('cart');
             $index = array_search($id, $cartSession);
             session()->forget("cart.$index");
