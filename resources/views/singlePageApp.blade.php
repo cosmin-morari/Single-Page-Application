@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ trans('messages.index') }}</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 </head>
 
@@ -61,8 +62,13 @@
                 <th>{{ trans('messages.title') }}</th>
                 <th>{{ trans('messages.description') }}</th>
                 <th>{{ trans('messages.price') }}</th>
+                ${(()=>{
+                        if(window.location.hash == '#cart'){
+                            return `<th>{{ trans('messages.yourQuantity') }}</th>`
+                        }
+                })()}
                 <th>{{ trans('messages.action') }}</th>
-                </tr>`
+                </tr>  `
             ].join('');
 
             $.each(products, function(key, product) {
@@ -74,6 +80,22 @@
                     <td>${product.title}</td>
                     <td>${product.description}</td>
                     <td>${product.price}</td>
+                    ${(()=>{
+                        if(window.location.hash == '#cart'){
+                            return `<td>
+                                <form action ="${url}" method="POST" class="updateQuantity">
+                                @if (session('cartQuantity'))
+                                @foreach (session('cartQuantity') as $item)
+                                    @foreach ($item as $key => $value)
+                                            <input type="number" name="quantity" class="updateQuantity" value="{{ $value }}">
+                                    @endforeach
+                                @endforeach
+                                <input type="submit" name="setQuantity" value="{{ trans('messages.update') }}">
+                                @endif
+                                </form>
+                                </td>`
+                        }
+                })()}
                     <td>
                         <form action ="${url}" method="POST" class="formAddDeleteToCart">
                             ${(()=>{
@@ -100,6 +122,9 @@
             data: {
                 "_token": "{{ csrf_token() }}"
             },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
             success: function(response) {
                 if (window.location.hash == '#cart') {
                     $('.cart .list').html(renderList(response));
@@ -111,6 +136,34 @@
                 }
             }
         });
+    })
+
+    $('body').on('submit', '.checkOut', function(e){
+        e.preventDefault();
+        $.ajax({
+            url:$(this).attr('action'),
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}"
+            },
+            success:function(response){
+            }
+        })
+    })
+
+    $('body').on('submit', '.updateQuantity', function(e){
+        e.preventDefault();
+        
+        console.log(e.target.children())
+        $.ajax({
+            url:$(this).attr('action'),
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}"
+            },
+            success:function(response){
+            }
+        })
     })
     /**
      * URL hash change handler
@@ -145,6 +198,7 @@
                     type: 'GET',
                     dataType: 'json',
                     success: function(response) {
+                        console.log(response);
                         // Render the products in the index list
                         $('.index .list').html(renderList(response));
                     }

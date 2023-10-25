@@ -28,9 +28,9 @@ class ProductController extends Controller
         $cartQuantity = session()->get('cartQuantity');
         if ($cartSession) {
             $products = Product::whereIn('id', $cartSession)->get();
-
+    
             if ($products) {
-                return $request->ajax() ? response()->json($products) : view('cart', ['products' =>  $products, 'mail' => false, 'cartQuantity' => $cartQuantity]);
+                return $request->ajax() ? response()->json($products) : view('cart', ['products' =>  $products, 'mail' => false, 'cartQuantity' => $cartQuantity]); 
             }
         } else {
             return view('cart', ['mail' => false, 'empty' =>  trans('messages.emptyCart')]);
@@ -55,8 +55,7 @@ class ProductController extends Controller
     {
         $quantity = $request->input('quantity');
         $cartQuantity = session('cartQuantity');
-
-        if ($request->input('setQuantity')) {
+        if ($request->input('setQuantity') || $request->ajax()) {
             foreach ($cartQuantity as $key => $value) {
                 if (isset($value[$id])) {
                     $cartQuantity[$key][$id] = $quantity;
@@ -65,12 +64,12 @@ class ProductController extends Controller
             session()->put('cartQuantity', $cartQuantity);
         }
 
-        if ($request->input('delete') || $request->ajax()) {
-            $cartSession = session()->get('cart');
-            $index = array_search($id, $cartSession);
-            session()->forget("cart.$index");
-            session()->forget("cartQuantity.$index");
-        }
+        // if ($request->input('delete') || $request->ajax()) {
+        //     $cartSession = session()->get('cart');
+        //     $index = array_search($id, $cartSession);
+        //     session()->forget("cart.$index");
+        //     session()->forget("cartQuantity.$index");
+        // }
         $products = Product::whereIn('id', session()->get('cart'))->get();
         
         return $request->ajax() ? response()->json($products) : redirect()->back();

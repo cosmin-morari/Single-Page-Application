@@ -9,6 +9,7 @@ use App\Http\Requests\ValidateCheckoutRequest;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CheckoutMail;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class OrdersController extends Controller
@@ -26,17 +27,16 @@ class OrdersController extends Controller
         return view('order', ['order' => $order]);
     }
 
-    public function checkout(ValidateCheckoutRequest $request)
+    public function checkout(Request $request)
     {
         $idProductsInCart = session()->get('cart');
         $cartQuantity = session()->get('cartQuantity');
         $products = Product::whereIn('id', $idProductsInCart)->get();
 
-        if (collect([$products])->isEmpty()) {
+        if ($products->isEmpty()) {
             throw ValidationException::withMessages([
                 'cartError' => [trans('messages.error')],
             ])->status(422);
-        
         }
         try {
 
@@ -51,9 +51,7 @@ class OrdersController extends Controller
             $order->comments = $request->input('comments');
             $order->save();
 
-
-
-            //insert pivot table
+            // insert pivot table
 
             $cartQuantityMaped = array_map('current', $cartQuantity);
             foreach ($cartQuantityMaped as $items => $quantity) {
@@ -69,7 +67,7 @@ class OrdersController extends Controller
         }
         session()->forget('cartQuantity');
         session()->forget('cart');
-        return redirect()->route('index');
+        return $request->ajax() ? response()->json('succes') : redirect()->route('index');
     }
 
     public function productsView()
