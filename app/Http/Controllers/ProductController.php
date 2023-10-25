@@ -18,7 +18,7 @@ class ProductController extends Controller
     {
         $cartSession = session()->get('cart');
         $products = ($cartSession) ? Product::whereNotIn('id', $cartSession)->get() : Product::all();
-        
+
         return $request->ajax() ? response()->json($products) : view('index', ['allProducts' => $products]);
     }
 
@@ -46,8 +46,10 @@ class ProductController extends Controller
                 $initialValue = 1;
                 session()->push('cartQuantity', [$product->id => $initialValue]);
             }
+            $products = Product::whereNotIn('id', session()->get('cart'))->get();
         }
-        return redirect()->back();
+
+        return $request->ajax() ? response()->json($products) : redirect()->back();
     }
     public function cartCheckout(Request $request, $id)
     {
@@ -69,8 +71,9 @@ class ProductController extends Controller
             session()->forget("cart.$index");
             session()->forget("cartQuantity.$index");
         }
-
-        return redirect()->back();
+        $products = Product::whereIn('id', session()->get('cart'))->get();
+        
+        return $request->ajax() ? response()->json($products) : redirect()->back();
     }
 
     public function deleteProductFromDB($id)

@@ -23,7 +23,26 @@
     <div class="page cart">
         <!-- The cart element where the products list is rendered -->
         <table border="1" class="list"></table>
-        <div class="toMail"></div>
+        <div class="toMail" style="display: none">
+            <form action="{{ route('checkout') }}" class="checkOut" method="POST">
+                @csrf
+                <input type="text" name="name" placeholder="{{ trans('messages.name') }}"
+                    value="{{ old('name') }}">
+                @error('name')
+                    <p style="color:red;">{{ $message }}</p>
+                @enderror
+                <input type="text" name="contactDetails" placeholder="{{ trans('messages.contactDetails') }}"
+                    value="{{ old('contactDetails') }}">
+                @error('contactDetails')
+                    <p style="color:red;">{{ $message }}</p>
+                @enderror
+                <textarea name="comments" placeholder="{{ trans('messages.comments') }}" cols="20" rows="4"> {{ old('comments') }}</textarea>
+                @error('comments')
+                    <p style="color:red;">{{ $message }}</p>
+                @enderror
+                <button type="submit" class="RemoveBtn">{{ trans('messages.checkout') }}</button>
+            </form>
+        </div>
         <!-- A link to go to the index by changing the hash -->
         <a href="#" class="button">Go to index</a>
     </div>
@@ -34,26 +53,7 @@
 <!-- Custom JS script -->
 <script type="text/javascript">
     $(document).ready(function() {
-        let formMail = `
-                    <form action="{{ route('checkout') }}" class="checkOut" method="POST">
-                        @csrf
-                        <input type="text" name="name" placeholder="{{ trans('messages.name') }}"
-                            value="{{ old('name') }}">
-                        @error('name')
-                            <p style="color:red;">{{ $message }}</p>
-                        @enderror
-                        <input type="text" name="contactDetails" placeholder="{{ trans('messages.contactDetails') }}"
-                            value="{{ old('contactDetails') }}">
-                        @error('contactDetails')
-                            <p style="color:red;">{{ $message }}</p>
-                        @enderror
-                        <textarea name="comments" placeholder="{{ trans('messages.comments') }}" cols="20" rows="4"> {{ old('comments') }}</textarea>
-                        @error('comments')
-                            <p style="color:red;">{{ $message }}</p>
-                        @enderror
-                        <button type="submit" class="RemoveBtn">{{ trans('messages.checkout') }}</button>
-                    </form>
-        `;
+
         function renderList(products) {
             html = [
                 `<tr>,
@@ -85,69 +85,75 @@
                             })()}
                         </form>
                     </td> 
-                    </tr>
-                    `
+                    </tr>`
                 ].join('');
             });
 
             return html;
         }
 
-        $('body').on('submit', '.formAddDeleteToCart', function(e) {
-            e.preventDefault();
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}"
-                },
-                success: function(response) {
-                    window.onhashchange();
+    $('body').on('submit', '.formAddDeleteToCart', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}"
+            },
+            success: function(response) {
+                if (window.location.hash == '#cart') {
+                    $('.cart .list').html(renderList(response));
+                    if (!response.length) {
+                        $('.toMail').hide();
+                    }
+                } else {
+                    $('.index .list').html(renderList(response));
                 }
-            });
-        })
-        /**
-         * URL hash change handler
-         */
-        window.onhashchange = function() {
-            // First hide all the pages
-            $('.page').hide();
-            switch (window.location.hash) {
-                case '#cart':
-                    // Show the cart page
-                    $('.cart').show();
-                            
-                    // Load the cart products from the server
-                    $.ajax({
-                        url: "{{ route('cart') }}",
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(response) {
-                            // Render the products in the cart list
-                            $('.cart .list').html(renderList(response));
-                            $('.toMail').html(formMail);
-                        }
-                    });
-                    break;
-                default:
-                    // If all else fails, always default to index
-                    // Show the index page
-                    $('.index').show();
-                    // Load the index products from the server
-                    $.ajax({
-                        url: "{{ route('index') }}",
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(response) {
-                            // Render the products in the index list
-                            $('.index .list').html(renderList(response));
-                        }
-                    });
-                    break;
             }
-        }
+        });
+    })
+    /**
+     * URL hash change handler
+     */
+    window.onhashchange = function() {
+        // First hide all the pages
+        $('.page').hide();
+        switch (window.location.hash) {
+            case '#cart':
+                // Show the cart page
+                $('.cart').show();
 
-        window.onhashchange();
+                // Load the cart products from the server
+                $.ajax({
+                    url: "{{ route('cart') }}",
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        // Render the products in the cart list
+                        $('.cart .list').html(renderList(response));
+                        $('.toMail').show();
+                    }
+                });
+                break;
+            default:
+                // If all else fails, always default to index
+                // Show the index page
+                $('.index').show();
+                // Load the index products from the server
+                $.ajax({
+                    url: "{{ route('index') }}",
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        // Render the products in the index list
+                        $('.index .list').html(renderList(response));
+                    }
+                });
+                break;
+        }
+    }
+
+    window.onhashchange();
     });
 </script>
 
