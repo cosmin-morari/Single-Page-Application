@@ -24,13 +24,20 @@ class ProductController extends Controller
 
     public function cart(Request $request)
     {
+
         $cartSession = session()->get('cart');
         $cartQuantity = session()->get('cartQuantity');
         if ($cartSession) {
             $products = Product::whereIn('id', $cartSession)->get();
-    
+
+            foreach ($products as $product) {
+                $product->quantity = [...$cartQuantity];
+            }
+            
+
+
             if ($products) {
-                return $request->ajax() ? response()->json($products) : view('cart', ['products' =>  $products, 'mail' => false, 'cartQuantity' => $cartQuantity]); 
+                return $request->ajax() ? response()->json($products) : view('cart', ['products' =>  $products, 'mail' => false, 'cartQuantity' => $cartQuantity]);
             }
         } else {
             return view('cart', ['mail' => false, 'empty' =>  trans('messages.emptyCart')]);
@@ -38,6 +45,7 @@ class ProductController extends Controller
     }
     public function store(Request $request, $id)
     {
+        $id = $request->ajax() ? $request->input('id') : $id;
         $product = Product::findOrFail($id);
 
         if ($product) {
@@ -46,15 +54,16 @@ class ProductController extends Controller
                 $initialValue = 1;
                 session()->push('cartQuantity', [$product->id => $initialValue]);
             }
-            $products = Product::whereNotIn('id', session()->get('cart'))->get();
         }
 
-        return $request->ajax() ? response()->json($products) : redirect()->back();
+        return $request->ajax() ? response()->json(session('cartQuantity')) : redirect()->back();
     }
     public function cartCheckout(Request $request, $id)
     {
         $quantity = $request->input('quantity');
         $cartQuantity = session('cartQuantity');
+        $id = $request->ajax() ? $request->input('id') : $id;
+
         if ($request->input('setQuantity') || $request->ajax()) {
             foreach ($cartQuantity as $key => $value) {
                 if (isset($value[$id])) {
@@ -64,15 +73,14 @@ class ProductController extends Controller
             session()->put('cartQuantity', $cartQuantity);
         }
 
-        // if ($request->input('delete') || $request->ajax()) {
-        //     $cartSession = session()->get('cart');
-        //     $index = array_search($id, $cartSession);
-        //     session()->forget("cart.$index");
-        //     session()->forget("cartQuantity.$index");
-        // }
-        $products = Product::whereIn('id', session()->get('cart'))->get();
-        
-        return $request->ajax() ? response()->json($products) : redirect()->back();
+        if ($request->input('delete') || $request->ajax()) {
+            $cartSession = session()->get('cart');
+            $index = array_search($id, $cartSession);
+            session()->forget("cart.$index");
+            session()->forget("cartQuantity.$index");
+        }
+
+        return $request->ajax() ? response()->json(session('cartQuantity')) : redirect()->back();
     }
 
     public function deleteProductFromDB($id)

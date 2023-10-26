@@ -15,7 +15,7 @@
     <!-- The index page -->
     <div class="page index">
         <!-- The index element where the products list is rendered -->
-        <table border="1" class="list"></table>
+        <table  border="1" class="list"></table>
         <!-- A link to go to the cart by changing the hash -->
         <a href="#cart" class="button">Go to cart</a>
     </div>
@@ -23,7 +23,7 @@
     <!-- The cart page -->
     <div class="page cart">
         <!-- The cart element where the products list is rendered -->
-        <table border="1" class="list"></table>
+        <table border="1" class="list tableProducts"></table>
         <div class="toMail" style="display: none">
             <form action="{{ route('checkout') }}" class="checkOut" method="POST">
                 @csrf
@@ -72,6 +72,7 @@
             ].join('');
 
             $.each(products, function(key, product) {
+
                 let url = window.location.hash == '#cart' ? '{{ route('cartCheckout', ':id') }}' : '{{ route('addToCart', ':id') }}';
                 url = url.replace(':id', product.id);
                 html += [
@@ -82,18 +83,13 @@
                     <td>${product.price}</td>
                     ${(()=>{
                         if(window.location.hash == '#cart'){
+        
                             return `<td>
-                                <form action ="${url}" method="POST" class="updateQuantity">
-                                @if (session('cartQuantity'))
-                                @foreach (session('cartQuantity') as $item)
-                                    @foreach ($item as $key => $value)
-                                            <input type="number" name="quantity" class="updateQuantity" value="{{ $value }}">
-                                    @endforeach
-                                @endforeach
-                                <input type="submit" name="setQuantity" value="{{ trans('messages.update') }}">
-                                @endif
-                                </form>
-                                </td>`
+                                        <form action ="${url}" method="POST" class="updateQuantity">
+                                            <input type="number" name="quantity" class="quantity" id="${product.id}" value="${product.quantity[key][product.id]}">
+                                            <input type="submit" name="setQuantity" value="{{ trans('messages.update') }}">
+                                        </form>
+                                    </td>`
                         }
                 })()}
                     <td>
@@ -114,26 +110,25 @@
             return html;
         }
 
+
     $('body').on('submit', '.formAddDeleteToCart', function(e) {
         e.preventDefault();
+        let id = $(this).attr('action').substring($(this).attr('action').lastIndexOf('/') + 1);
         $.ajax({
             url: $(this).attr('action'),
             type: 'POST',
             data: {
-                "_token": "{{ csrf_token() }}"
+                id: id
             },
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                if (window.location.hash == '#cart') {
-                    $('.cart .list').html(renderList(response));
                     if (!response.length) {
                         $('.toMail').hide();
+                        $('.tableProducts').hide();
                     }
-                } else {
-                    $('.index .list').html(renderList(response));
-                }
+                    window.onhashchange(); 
             }
         });
     })
@@ -153,8 +148,6 @@
 
     $('body').on('submit', '.updateQuantity', function(e){
         e.preventDefault();
-        
-        console.log(e.target.children())
         $.ajax({
             url:$(this).attr('action'),
             type: 'POST',
@@ -181,10 +174,16 @@
                     url: "{{ route('cart') }}",
                     type: 'GET',
                     dataType: 'json',
+                    data:{
+                        'a': 'a'
+                    },
                     success: function(response) {
+                        console.log(response)
+                       
                         // Render the products in the cart list
                         $('.cart .list').html(renderList(response));
                         $('.toMail').show();
+                        $('.tableProducts').show();
                     }
                 });
                 break;
@@ -198,7 +197,7 @@
                     type: 'GET',
                     dataType: 'json',
                     success: function(response) {
-                        console.log(response);
+                        console.log(response)
                         // Render the products in the index list
                         $('.index .list').html(renderList(response));
                     }
