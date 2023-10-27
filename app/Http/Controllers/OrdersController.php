@@ -67,7 +67,7 @@ class OrdersController extends Controller
         }
         session()->forget('cartQuantity');
         session()->forget('cart');
-        return $request->ajax() ? response()->json('succes') : redirect()->route('index');
+        return $request->ajax() ? response()->json(['succes' => true]) : redirect()->route('index');
     }
 
     public function productsView()

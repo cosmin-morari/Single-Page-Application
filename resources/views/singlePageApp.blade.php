@@ -15,7 +15,7 @@
     <!-- The index page -->
     <div class="page index">
         <!-- The index element where the products list is rendered -->
-        <table  border="1" class="list"></table>
+        <table border="1" class="list"></table>
         <!-- A link to go to the cart by changing the hash -->
         <a href="#cart" class="button">Go to cart</a>
     </div>
@@ -25,8 +25,8 @@
         <!-- The cart element where the products list is rendered -->
         <table border="1" class="list tableProducts"></table>
         <div class="toMail" style="display: none">
-            <form action="{{ route('checkout') }}" class="checkOut" method="POST">
-                @csrf
+            <form action="checkout" class="checkOut" method="POST">
+
                 <input type="text" name="name" placeholder="{{ trans('messages.name') }}"
                     value="{{ old('name') }}">
                 @error('name')
@@ -47,9 +47,11 @@
         <!-- A link to go to the index by changing the hash -->
         <a href="#" class="button">Go to index</a>
     </div>
-</body>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{{ asset('scripts/formAddDeleteToCart.js') }}"></script>
+    <script src="{{ asset('scripts/updateQuantity.js') }}"></script>
+    <script src="{{ asset('scripts/checkOut.js') }}"></script>
 
 <!-- Custom JS script -->
 <script type="text/javascript">
@@ -75,6 +77,7 @@
 
                 let url = window.location.hash == '#cart' ? '{{ route('cartCheckout', ':id') }}' : '{{ route('addToCart', ':id') }}';
                 url = url.replace(':id', product.id);
+                let formAddDeleteToCartRoute = window.location.hash == '#cart' ? `cartCheckout/${product.id}` : `addToCart/${product.id}`;
                 html += [
                     `<tr>
                     <td><img src="{{ asset('storage/photos/') }}/${product.imageSource}"></td>
@@ -83,17 +86,16 @@
                     <td>${product.price}</td>
                     ${(()=>{
                         if(window.location.hash == '#cart'){
-        
                             return `<td>
-                                        <form action ="${url}" method="POST" class="updateQuantity">
-                                            <input type="number" name="quantity" class="quantity" id="${product.id}" value="${product.quantity[key][product.id]}">
-                                            <input type="submit" name="setQuantity" value="{{ trans('messages.update') }}">
+                                        <form action="cartCheckout/${product.id}" method="POST" class="updateQuantity">
+                                            <input type="number" name="setQuantity" class="quantity" id="${product.id}" value="${product.quantity[key][product.id]}">
+                                            <button type="submit" name="setQuantity">{{ trans('messages.update') }}</button>
                                         </form>
                                     </td>`
                         }
                 })()}
                     <td>
-                        <form action ="${url}" method="POST" class="formAddDeleteToCart">
+                        <form action ="${formAddDeleteToCartRoute}" method="POST" class="formAddDeleteToCart">
                             ${(()=>{
                                 if(window.location.hash == '#cart'){
                                     return `<button name="delete" type="submit" class="addToCartBtn">{{ trans('messages.delete') }}</button>`
@@ -102,65 +104,17 @@
                                 }
                             })()}
                         </form>
-                    </td> 
-                    </tr>`
+                    </td>`
                 ].join('');
             });
 
             return html;
         }
 
-
-    $('body').on('submit', '.formAddDeleteToCart', function(e) {
-        e.preventDefault();
-        let id = $(this).attr('action').substring($(this).attr('action').lastIndexOf('/') + 1);
-        $.ajax({
-            url: $(this).attr('action'),
-            type: 'POST',
-            data: {
-                id: id
-            },
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                    if (!response.length) {
-                        $('.toMail').hide();
-                        $('.tableProducts').hide();
-                    }
-                    window.onhashchange(); 
-            }
-        });
-    })
-
-    $('body').on('submit', '.checkOut', function(e){
-        e.preventDefault();
-        $.ajax({
-            url:$(this).attr('action'),
-            type: 'POST',
-            data: {
-                "_token": "{{ csrf_token() }}"
-            },
-            success:function(response){
-            }
-        })
-    })
-
-    $('body').on('submit', '.updateQuantity', function(e){
-        e.preventDefault();
-        $.ajax({
-            url:$(this).attr('action'),
-            type: 'POST',
-            data: {
-                "_token": "{{ csrf_token() }}"
-            },
-            success:function(response){
-            }
-        })
-    })
     /**
      * URL hash change handler
      */
+
     window.onhashchange = function() {
         // First hide all the pages
         $('.page').hide();
@@ -168,18 +122,15 @@
             case '#cart':
                 // Show the cart page
                 $('.cart').show();
-
                 // Load the cart products from the server
                 $.ajax({
                     url: "{{ route('cart') }}",
                     type: 'GET',
                     dataType: 'json',
-                    data:{
-                        'a': 'a'
+                    headers: {
+                        'accepts': 'application/json'
                     },
                     success: function(response) {
-                        console.log(response)
-                       
                         // Render the products in the cart list
                         $('.cart .list').html(renderList(response));
                         $('.toMail').show();
@@ -196,6 +147,9 @@
                     url: "{{ route('index') }}",
                     type: 'GET',
                     dataType: 'json',
+                    headers: {
+                        'accepts': 'application/json'
+                    },
                     success: function(response) {
                         console.log(response)
                         // Render the products in the index list
@@ -205,9 +159,8 @@
                 break;
         }
     }
-
     window.onhashchange();
-    });
+    })
 </script>
-
+</body>
 </html>
