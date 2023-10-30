@@ -24,36 +24,14 @@
     <div class="page cart">
         <!-- The cart element where the products list is rendered -->
         <table border="1" class="list tableProducts"></table>
-        <div class="toMail" style="display: none">
-            <form action="checkout" class="checkOut" method="POST">
-
-                <input type="text" name="name" placeholder="{{ trans('messages.name') }}"
-                    value="{{ old('name') }}">
-                @error('name')
-                    <p style="color:red;">{{ $message }}</p>
-                @enderror
-                <input type="text" name="contactDetails" placeholder="{{ trans('messages.contactDetails') }}"
-                    value="{{ old('contactDetails') }}">
-                @error('contactDetails')
-                    <p style="color:red;">{{ $message }}</p>
-                @enderror
-                <textarea name="comments" placeholder="{{ trans('messages.comments') }}" cols="20" rows="4"> {{ old('comments') }}</textarea>
-                @error('comments')
-                    <p style="color:red;">{{ $message }}</p>
-                @enderror
-                <button type="submit" class="RemoveBtn">{{ trans('messages.checkout') }}</button>
-            </form>
-        </div>
+        <div class="toMail" style="display: none"></div>
         <!-- A link to go to the index by changing the hash -->
         <a href="#" class="button">Go to index</a>
     </div>
 
-<!-- Custom JS script -->
-<script type="text/javascript">
-let translations = {!! json_encode(__('messages')) !!};
-</script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 <script src="{{ asset('scripts/render.js') }}"></script>
 <script src="{{ asset('scripts/formAddDeleteToCart.js') }}"></script>
 <script src="{{ asset('scripts/updateQuantity.js') }}"></script>
