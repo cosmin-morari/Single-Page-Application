@@ -3,8 +3,10 @@ $('body').on('submit', '.updateQuantity', function(e) {
 
     let id = $(this).attr('action').substring($(this).attr('action').lastIndexOf('/') + 1);
     let updateValue = $(this).find('input').val();
+    let url = $(this).attr('action');
+    
     $.ajax({
-        url: `cartCheckout/${id}`,
+        url: url,
         type: 'POST',
         dataType: 'json',
         headers: {

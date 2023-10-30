@@ -44,3 +44,5 @@ Route::group(['middleware' => ['customAuth']], function () {
 Route::get('/singlePageApp', function(){
     return view('singlePageApp');
 })->name('singlePageApp');
+
+Route::get('/api/translation', [ProductController::class, 'translationWords'])->name('translation');

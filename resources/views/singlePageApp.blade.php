@@ -48,119 +48,17 @@
         <a href="#" class="button">Go to index</a>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="{{ asset('scripts/formAddDeleteToCart.js') }}"></script>
-    <script src="{{ asset('scripts/updateQuantity.js') }}"></script>
-    <script src="{{ asset('scripts/checkOut.js') }}"></script>
-
 <!-- Custom JS script -->
 <script type="text/javascript">
-    $(document).ready(function() {
-
-        function renderList(products) {
-            html = [
-                `<tr>,
-                <th>{{ trans('messages.image') }}</th>
-                <th>{{ trans('messages.title') }}</th>
-                <th>{{ trans('messages.description') }}</th>
-                <th>{{ trans('messages.price') }}</th>
-                ${(()=>{
-                        if(window.location.hash == '#cart'){
-                            return `<th>{{ trans('messages.yourQuantity') }}</th>`
-                        }
-                })()}
-                <th>{{ trans('messages.action') }}</th>
-                </tr>  `
-            ].join('');
-
-            $.each(products, function(key, product) {
-
-                let url = window.location.hash == '#cart' ? '{{ route('cartCheckout', ':id') }}' : '{{ route('addToCart', ':id') }}';
-                url = url.replace(':id', product.id);
-                let formAddDeleteToCartRoute = window.location.hash == '#cart' ? `cartCheckout/${product.id}` : `addToCart/${product.id}`;
-                html += [
-                    `<tr>
-                    <td><img src="{{ asset('storage/photos/') }}/${product.imageSource}"></td>
-                    <td>${product.title}</td>
-                    <td>${product.description}</td>
-                    <td>${product.price}</td>
-                    ${(()=>{
-                        if(window.location.hash == '#cart'){
-                            return `<td>
-                                        <form action="cartCheckout/${product.id}" method="POST" class="updateQuantity">
-                                            <input type="number" name="setQuantity" class="quantity" id="${product.id}" value="${product.quantity[key][product.id]}">
-                                            <button type="submit" name="setQuantity">{{ trans('messages.update') }}</button>
-                                        </form>
-                                    </td>`
-                        }
-                })()}
-                    <td>
-                        <form action ="${formAddDeleteToCartRoute}" method="POST" class="formAddDeleteToCart">
-                            ${(()=>{
-                                if(window.location.hash == '#cart'){
-                                    return `<button name="delete" type="submit" class="addToCartBtn">{{ trans('messages.delete') }}</button>`
-                                }else{
-                                    return `<button type="submit" class="addToCartBtn">{{ trans('messages.add') }}</button>`
-                                }
-                            })()}
-                        </form>
-                    </td>`
-                ].join('');
-            });
-
-            return html;
-        }
-
-    /**
-     * URL hash change handler
-     */
-
-    window.onhashchange = function() {
-        // First hide all the pages
-        $('.page').hide();
-        switch (window.location.hash) {
-            case '#cart':
-                // Show the cart page
-                $('.cart').show();
-                // Load the cart products from the server
-                $.ajax({
-                    url: "{{ route('cart') }}",
-                    type: 'GET',
-                    dataType: 'json',
-                    headers: {
-                        'accepts': 'application/json'
-                    },
-                    success: function(response) {
-                        // Render the products in the cart list
-                        $('.cart .list').html(renderList(response));
-                        $('.toMail').show();
-                        $('.tableProducts').show();
-                    }
-                });
-                break;
-            default:
-                // If all else fails, always default to index
-                // Show the index page
-                $('.index').show();
-                // Load the index products from the server
-                $.ajax({
-                    url: "{{ route('index') }}",
-                    type: 'GET',
-                    dataType: 'json',
-                    headers: {
-                        'accepts': 'application/json'
-                    },
-                    success: function(response) {
-                        console.log(response)
-                        // Render the products in the index list
-                        $('.index .list').html(renderList(response));
-                    }
-                });
-                break;
-        }
-    }
-    window.onhashchange();
-    })
+let translations = {!! json_encode(__('messages')) !!};
 </script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="{{ asset('scripts/render.js') }}"></script>
+<script src="{{ asset('scripts/formAddDeleteToCart.js') }}"></script>
+<script src="{{ asset('scripts/updateQuantity.js') }}"></script>
+<script src="{{ asset('scripts/checkOut.js') }}"></script>
+<script src="{{ asset('scripts/route.js') }}"></script>
+
 </body>
 </html>

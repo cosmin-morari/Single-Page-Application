@@ -10,10 +10,13 @@ use Illuminate\Routing\Controller;
 use App\Http\Requests\ValidateAddProduct;
 use App\Http\Requests\ValidateQuantity;
 use App\Http\Requests\ValidateEditProduct;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
     use AuthorizesRequests, ValidatesRequests;
+
     public function index(Request $request)
     {
         $cartSession = session()->get('cart');
@@ -134,5 +137,58 @@ class ProductController extends Controller
     public function addProductView()
     {
         return view('product', ['destination' => 'addProduct']);
+    }
+    
+    public function translationWords()
+    {
+        $translate = [
+            'action' => 'action',
+            'actionViewOrder' => 'View Order',
+            'add' => 'Add',
+            'addProduct' => 'Add product',
+            'cart' => 'Go to cart',
+            'cartPage' => 'Cart',
+            'checkout' => 'Checkout',
+            'checkoutInformation' => 'Checkout Information',
+            'comments' => 'Comments',
+            'contactDetails' => 'Contact Details',
+            'customerDetails' => 'Customer Details',
+            'date' => 'Date',
+            'delete' => 'Delete',
+            'description' => 'Description',
+            'edit' => 'Edit',
+            'email' => 'Email',
+            'emailError' => 'The email was not sent successfully!',
+            'emailSucces' => 'The email was sent successfully!',
+            'emptyCart' => 'The cart is empty!',
+            'error' => 'An error has occurred. Please try again.',
+            'id' => 'Id',
+            'image' => 'Image',
+            'insufficientStock' => 'The stock is insufficient.',
+            'index' => 'Index',
+            'invalid' => 'Invalid credentials!',
+            'login' => 'Login',
+            'logout' => 'Logout',
+            'name' => 'Name',
+            'notOrders' => 'No orders found!',
+            'order' => 'Order',
+            'ordersPage' => 'Orders',
+            'password' => 'Password',
+            'price' => 'Price',
+            'productsPage' => 'Products',
+            'productPage' => 'Product',
+            'purchasedProducts' => 'Purchased Products',
+            'setQuantity' => 'Set quantity',
+            'save' => 'save',
+            'seeOrder' => 'See the order',
+            'submitOrder' => 'Thank you so much for your order! Below are the products you ordered!',
+            'title' => 'Title',
+            'totalPrice' => 'Total Price',
+            'update' => 'Update',
+            'userName' => 'Username',
+            'yourQuantity' => 'Quantity'
+        ];
+
+        return response()->json($translate);
     }
 }

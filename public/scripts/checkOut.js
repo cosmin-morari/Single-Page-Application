@@ -1,6 +1,8 @@
 $('body').on('submit', '.checkOut', function(e) {
     e.preventDefault();
+
     let data = $(this).serialize();
+    
     $.ajax({
         url: 'checkout',
         type: 'POST',
