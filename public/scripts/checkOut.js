@@ -2,7 +2,7 @@ $('body').on('submit', '.checkOut', function(e) {
     e.preventDefault();
 
     let data = $(this).serialize();
-    
+    console.log(data)
     $.ajax({
         url: 'checkout',
         type: 'POST',

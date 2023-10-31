@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Routing\Controller;
 use App\Http\Requests\AdminAuthorization;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {   
@@ -13,10 +14,11 @@ class AuthController extends Controller
         session()->forget('admin');
         return redirect()->route('login');
     }
-    public function viewLogin()
+    public function viewLogin(Request $request)
     {
         if (!session('admin')) {
-            return view('login');
+            
+            return $request->ajax() ? response()->json(view('login')->render()) : view('login');
         } else {
             return redirect()->route('products');
         }

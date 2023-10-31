@@ -3,17 +3,17 @@
 
 @section('content')
 
-    <form action="{{ route('validateLogin') }}" method="POST">
+    <form action="{{ route('validateLogin') }}" method="POST" class="login">
         @csrf
         <div class="container">
             <h3>{{ trans('messages.login') }}</h3>
-            <input type="text" name="adminMail" placeholder="{{ trans('messages.userName') }}"
+            <input type="text" name="adminMail" class="adminMail" placeholder="{{ trans('messages.userName') }}"
                 value="{{ old('adminMail') }}">
             @error('adminMail')
                 <p style="color:red;">{{ $message }}</p>
             @enderror
             <br><br>
-            <input type="password" name="adminPassword" placeholder="{{ trans('messages.password') }}"
+            <input type="password" name="adminPassword" class="adminPassword" placeholder="{{ trans('messages.password') }}"
                 value="{{ old('adminPassword') }}">
             @error('adminPassword')
                 <p style="color:red;">{{ $message }}</p>

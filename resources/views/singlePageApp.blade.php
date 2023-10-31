@@ -29,14 +29,19 @@
         <a href="#" class="button">Go to index</a>
     </div>
 
+    <!-- The login page -->
+    <div class="page login"></div>        
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
+<script src="{{ asset('scripts/translateWords.js') }}"></script>
 <script src="{{ asset('scripts/render.js') }}"></script>
+<script src="{{ asset('scripts/route.js') }}"></script>
 <script src="{{ asset('scripts/formAddDeleteToCart.js') }}"></script>
 <script src="{{ asset('scripts/updateQuantity.js') }}"></script>
 <script src="{{ asset('scripts/checkOut.js') }}"></script>
-<script src="{{ asset('scripts/route.js') }}"></script>
+<script src="{{ asset('scripts/login.js') }}"></script>
 
 </body>
 </html>
