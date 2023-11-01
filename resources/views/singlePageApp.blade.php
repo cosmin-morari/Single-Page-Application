@@ -30,7 +30,10 @@
     </div>
 
     <!-- The login page -->
-    <div class="page login"></div>        
+    <div class="page login"></div>   
+    
+    <!-- The products page -->
+    <div class="page products"></div>   
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Log;
 
 class OrdersController extends Controller
 {
-    public function viewOrders()
+    public function viewOrders(Request $request)
     {
         $data = Order::with('products')->get();
-        return view('orders', ['data' => $data]);
+        return $request->ajax() ? response()->json($data) : view('orders', ['data' => $data]);
     }
 
     public function viewOrder($id)

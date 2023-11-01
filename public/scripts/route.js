@@ -32,10 +32,29 @@ $(document).ready(function () {
                         accepts: "application/json",
                     },
                     success: function (response) {
-                        // Render the products in the cart list
-                        $(".login").html(response);
+                        $(".login").html(`
+                            <form action="login" method="POST" class="login">
+                                <div class="container">
+                                    <h3>${window.translation.login}</h3>
+                                    <input type="text" name="adminMail" class="adminMail" placeholder="${window.translation.userName}">
+                                    <div style="color:red" class="error adminMail"></div>
+                                    <br><br>
+                                    <input type="password" name="adminPassword" class="adminPassword" placeholder="${window.translation.password}">
+                                    <div style="color:red" class="error adminPassword "></div>
+                                    <br><br>
+                                    <button type="submit">${window.translation.login}</button>
+                                </div>
+                            </form>
+                            `);
                     },
+                    error: function (err){
+                        window.location.hash = '#products';
+                    }
                 });
+                break;
+
+            case "#products":
+                $('.products').show();
                 break;
             default:
                 // If all else fails, always default to index
