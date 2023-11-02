@@ -10,7 +10,6 @@ $("body").on("submit", ".logoutAdmin", function (e) {
             accepts: "application/json",
         },
         success: function (response) {
-            console.log(response)
             if(response.admin == false){
                 window.location.hash="#login";
             }

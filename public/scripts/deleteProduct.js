@@ -1,7 +1,6 @@
 $("body").on("submit", ".deleteProductDb", function (e) {
     e.preventDefault();
     let url = $(this).attr("action");
-    console.log(e, url);
     $.ajax({
         url: url,
         type: "POST",

@@ -72,6 +72,27 @@ $(document).ready(function () {
                     },
                 });
                 break;
+            case "#product":
+                $(".product").show();
+                $.ajax({
+                    url: "addProduct",
+                    type: "GET",
+                    dataType: "json",
+                    headers: {
+                        accepts: "application/json",
+                    },
+                    success: function (response) {
+                        if (response.sessionAdmin == false) {
+                            $(".product").hide();
+                            window.location.hash = "#login";
+                        }else{
+                            $(".product").html(
+                                addEditProductTemplate(null, response.destination)
+                            );
+                        }
+                    },
+                });
+                break;
             default:
                 // If all else fails, always default to index
                 // Show the index page

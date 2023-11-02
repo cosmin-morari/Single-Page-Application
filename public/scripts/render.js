@@ -69,7 +69,7 @@ function renderList(products) {
     $(".toMail").html(mailTemplate);
 
     let adminActionTemplate = `
-        <a href="addProduct">${window.translation.addProduct}</a>
+        <a href="#product">${window.translation.addProduct}</a>
         <form action= "logoutAdmin" method="POST" class="logoutAdmin">
             <input type="submit" class="logout" name="logout" value="${window.translation.logout}">
         </form>
@@ -78,9 +78,34 @@ function renderList(products) {
         <a href="orders">${window.translation.ordersPage}</a>
     `;
 
-    if(!$(".buttons").children().length){
+    if (!$(".buttons").children().length) {
         $(".buttons").append(adminActionTemplate);
     }
 
+    return html;
+}
+
+function addEditProductTemplate(productId, destination) {
+    html = `
+    <div class="container">
+        <h3>${window.translation.productPage}</h3>
+        <form action="${destination}" method="POST" enctype="multipart/form-data" class="addEditProduct">
+            <input type="text" name="title" class="title" placeholder="${window.translation.title}">
+            <br>
+            <br>
+            <input type="text" name="description" class="description" placeholder="${window.translation.description}">
+            <br>
+            <br>
+            <input type="text" name="price" class="price" placeholder="${window.translation.price}">
+            <br>
+            <br>
+            <input type="file" name="image" id="file" class="inputFile">
+            <br>
+            <br>
+            <a href="#products">${window.translation.productsPage}</a>
+            <input type="submit" name="save" value="${window.translation.save}">
+        </form>
+    </div>
+    `;
     return html;
 }

@@ -16,7 +16,6 @@ $("body").on("submit", ".login", function (e) {
             $(document).find(".error").text("");
         },
         success: function (response) {
-            console.log(response)
             if (response.status == 0) {
                 $.each(response.error, function (prefix, val) {
                     $("." + prefix).text(val[0]);

@@ -38,6 +38,8 @@
         <div class="buttons"></div>
     </div>
 
+    <div class="page product"></div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
     <script src="{{ asset('scripts/translateWords.js') }}"></script>
@@ -49,6 +51,7 @@
     <script src="{{ asset('scripts/login.js') }}"></script>
     <script src="{{ asset('scripts/logout.js') }}"></script>
     <script src="{{ asset('scripts/deleteProduct.js') }}"></script>
+    <script src="{{ asset('scripts/addEditProduct.js') }}"></script>
 
 </body>
 

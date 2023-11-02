@@ -111,21 +111,29 @@ class ProductController extends Controller
         return redirect()->route('products');
     }
 
-    public function storeProduct(ValidateAddProduct $request)
-    {
-        $newImageName = time() . '-' . $request->title . '.' . $request->image->extension();
-        $request->image->move(public_path('storage/photos'), $newImageName);
-        $product = new Product;
-        $data = [
-            'title' => $request->title,
-            'description' => $request->description,
-            'price' => $request->price,
-            'imageSource' => $newImageName
-        ];
-        $product->fill($data);
-        $product->save();
+    public function storeProduct(Request $request,)
+    {   
+        if($request->ajax()){
+            $title = $request->title;
+            $newImageName = time() . '-' . $request->title . '.' . $request->image;
+            return response()->json(['message'=> 'The product has been successfully added.',$title]);
+        }else{
+            $newImageName = time() . '-' . $request->title . '.' . $request->image->extension();
+            $request->image->move(public_path('storage/photos'), $newImageName);
+            $product = new Product;
+            $data = [
+                'title' => $request->title,
+                'description' => $request->description,
+                'price' => $request->price,
+                'imageSource' => $newImageName
+            ];
+            $product->fill($data);
+            $product->save();
+    
+            return redirect()->back();
+        }
 
-        return redirect()->back();
+       
     }
 
     public function editProductView($id)
@@ -134,9 +142,9 @@ class ProductController extends Controller
         return view('product', ['product' => $product, 'destination' => 'editProduct']);
     }
 
-    public function addProductView()
+    public function addProductView(Request $request)
     {
-        return view('product', ['destination' => 'addProduct']);
+        return $request->ajax() ? response()->json(['destination' => 'addProduct']) : view('product', ['destination' => 'addProduct']);
     }
     
     public function translationWords()
