@@ -30,21 +30,26 @@
     </div>
 
     <!-- The login page -->
-    <div class="page login"></div>   
-    
+    <div class="page login"></div>
+
     <!-- The products page -->
-    <div class="page products"></div>   
+    <div class="page products">
+        <table border="1" class="list"></table>
+        <div class="buttons"></div>
+    </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-<script src="{{ asset('scripts/translateWords.js') }}"></script>
-<script src="{{ asset('scripts/render.js') }}"></script>
-<script src="{{ asset('scripts/route.js') }}"></script>
-<script src="{{ asset('scripts/formAddDeleteToCart.js') }}"></script>
-<script src="{{ asset('scripts/updateQuantity.js') }}"></script>
-<script src="{{ asset('scripts/checkOut.js') }}"></script>
-<script src="{{ asset('scripts/login.js') }}"></script>
+    <script src="{{ asset('scripts/translateWords.js') }}"></script>
+    <script src="{{ asset('scripts/render.js') }}"></script>
+    <script src="{{ asset('scripts/route.js') }}"></script>
+    <script src="{{ asset('scripts/formAddDeleteToCart.js') }}"></script>
+    <script src="{{ asset('scripts/updateQuantity.js') }}"></script>
+    <script src="{{ asset('scripts/checkout.js') }}"></script>
+    <script src="{{ asset('scripts/login.js') }}"></script>
+    <script src="{{ asset('scripts/logout.js') }}"></script>
+    <script src="{{ asset('scripts/deleteProduct.js') }}"></script>
 
 </body>
+
 </html>

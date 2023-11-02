@@ -32,6 +32,10 @@ $(document).ready(function () {
                         accepts: "application/json",
                     },
                     success: function (response) {
+                        if (response.sessionAdmin != false) {
+                            $(".login").hide();
+                            window.location.hash = "#products";
+                        }
                         $(".login").html(`
                             <form action="login" method="POST" class="login">
                                 <div class="container">
@@ -47,14 +51,26 @@ $(document).ready(function () {
                             </form>
                             `);
                     },
-                    error: function (err){
-                        window.location.hash = '#products';
-                    }
                 });
                 break;
-
             case "#products":
-                $('.products').show();
+                $(".products").show();
+                $.ajax({
+                    url: "products",
+                    type: "GET",
+                    dataType: "json",
+                    headers: {
+                        accepts: "application/json",
+                    },
+                    success: function (response) {
+                        if (response.sessionAdmin == false) {
+                            $(".products").hide();
+                            window.location.hash = "#login";
+                        } else {
+                            $(".products .list").html(renderList(response));
+                        }
+                    },
+                });
                 break;
             default:
                 // If all else fails, always default to index

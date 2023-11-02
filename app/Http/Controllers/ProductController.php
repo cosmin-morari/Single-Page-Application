@@ -84,10 +84,10 @@ class ProductController extends Controller
         return $request->ajax() ? response()->json(['success' => true]) : redirect()->back();
     }
 
-    public function deleteProductFromDB($id)
+    public function deleteProductFromDB(Request $request, $id)
     {
         Product::firstOrFail('id')->destroy($id);
-        return redirect()->back();
+        return $request->ajax() ? response()->json(['message'=> 'The product has been deleted.']) : redirect()->back();
     }
 
     public function update(ValidateEditProduct $request)

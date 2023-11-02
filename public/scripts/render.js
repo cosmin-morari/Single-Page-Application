@@ -7,10 +7,11 @@ function renderList(products) {
             <th>${window.translation.price}</th>
             ${(() => {
                 if (window.location.hash == "#cart") {
-                    return `<th>${window.translation.yourQuantity}</th>`;
+                    return `<th>${window.translation.yourQuantity}</th><th>${window.translation.action}</th>`;
+                } else {
+                    return `<th>${window.translation.action}</th>`;
                 }
             })()}
-            <th>${window.translation.action}</th>
             </tr>  `,
     ].join("");
 
@@ -43,16 +44,16 @@ function renderList(products) {
                                 </td>`;
                     }
                 })()}
-                <td>
-                    <form action ="${formAddDeleteToCartRoute}" method="POST" class="formAddDeleteToCart">
-                        ${(() => {
-                            if (window.location.hash == "#cart") {
-                                return `<button name="delete" type="submit" class="addToCartBtn">${window.translation.delete}</button>`;
-                            } else {
-                                return `<button type="submit" class="addToCartBtn">${window.translation.add}</button>`;
-                            }
-                        })()}
-                    </form>
+                <td>    
+                    ${(() => {
+                        if (window.location.hash == "#cart") {
+                            return `<form action ="cartCheckout/${product.id}" method="POST" class="formAddDeleteToCart"><button name="delete" type="submit" class="addToCartBtn">${window.translation.delete}</button></form>`;
+                        } else if (window.location.hash == "") {
+                            return `<form action ="addToCart/${product.id}" method="POST" class="formAddDeleteToCart"><button type="submit" class="addToCartBtn">${window.translation.add}</button></form>`;
+                        } else if (window.location.hash == "#products") {
+                            return `<form action ="deleteProduct/${product.id}" method="POST" class="deleteProductDb"><a href="editProductView/${product.id}">${window.translation.edit}</a><button type="submit" class="addToCartBtn">${window.translation.delete}</button></form>`;
+                        }
+                    })()}
                 </td>`,
         ].join("");
     });
@@ -67,6 +68,19 @@ function renderList(products) {
         `;
     $(".toMail").html(mailTemplate);
 
+    let adminActionTemplate = `
+        <a href="addProduct">${window.translation.addProduct}</a>
+        <form action= "logoutAdmin" method="POST" class="logoutAdmin">
+            <input type="submit" class="logout" name="logout" value="${window.translation.logout}">
+        </form>
+        <br>
+        <br>
+        <a href="orders">${window.translation.ordersPage}</a>
+    `;
+
+    if(!$(".buttons").children().length){
+        $(".buttons").append(adminActionTemplate);
+    }
+
     return html;
 }
-

@@ -70,9 +70,9 @@ class OrdersController extends Controller
         return $request->ajax() ? response()->json(['succes' => true]) : redirect()->route('index');
     }
 
-    public function productsView()
+    public function productsView(Request $request)
     {
         $products = Product::all();
-        return view('products', ['allProducts' => $products]);
+        return $request->ajax() ? response()->json($products) : view('products', ['allProducts' => $products]);
     }
 }

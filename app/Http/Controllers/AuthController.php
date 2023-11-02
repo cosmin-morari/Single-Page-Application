@@ -10,15 +10,15 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {   
-    public function logoutAdmin()
+    public function logoutAdmin(Request $request)
     {
         session()->forget('admin');
-        return redirect()->route('login');
+        return $request->ajax()? response()->json(['message' => 'You disconnected.', 'admin'=>false]) : redirect()->route('login');
     }
     public function viewLogin(Request $request)
     {
         if (!session('admin')) {
-            return $request->ajax() ? response()->json(['sessionAdmin'=>false]) : view('login');
+            return $request->ajax() ? response()->json(['sessionAdmin'=>false, 'statusCode' => 401,  'message' => 'Unauthenticated' ]) : view('login');
         } else {
             return redirect()->route('products');
         }
