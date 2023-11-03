@@ -51,7 +51,7 @@ function renderList(products) {
                         } else if (window.location.hash == "") {
                             return `<form action ="addToCart/${product.id}" method="POST" class="formAddDeleteToCart"><button type="submit" class="addToCartBtn">${window.translation.add}</button></form>`;
                         } else if (window.location.hash == "#products") {
-                            return `<form action ="deleteProduct/${product.id}" method="POST" class="deleteProductDb"><a href="editProductView/${product.id}">${window.translation.edit}</a><button type="submit" class="addToCartBtn">${window.translation.delete}</button></form>`;
+                            return `<form action ="deleteProduct/${product.id}" method="POST" class="deleteProductDb"><a href="productEdit/${product.id}" class="editProductView">${window.translation.edit}</a><button type="submit" class="addToCartBtn">${window.translation.delete}</button></form>`;
                         }
                     })()}
                 </td>`,
@@ -69,13 +69,13 @@ function renderList(products) {
     $(".toMail").html(mailTemplate);
 
     let adminActionTemplate = `
-        <a href="#product">${window.translation.addProduct}</a>
+        <a href="#product" class="products">${window.translation.addProduct}</a>
         <form action= "logoutAdmin" method="POST" class="logoutAdmin">
             <input type="submit" class="logout" name="logout" value="${window.translation.logout}">
         </form>
         <br>
         <br>
-        <a href="orders">${window.translation.ordersPage}</a>
+        <a href="#orders">${window.translation.ordersPage}</a>
     `;
 
     if (!$(".buttons").children().length) {
@@ -85,27 +85,69 @@ function renderList(products) {
     return html;
 }
 
-function addEditProductTemplate(productId, destination) {
+function addEditProductTemplate(responseProduct, destination) {
+    let titleValueInput = responseProduct ? responseProduct.title : "";
+    let descriptionValueInput = responseProduct
+        ? responseProduct.description
+        : "";
+    let priceValueInput = responseProduct ? responseProduct.price : "";
+
     html = `
     <div class="container">
         <h3>${window.translation.productPage}</h3>
         <form action="${destination}" method="POST" enctype="multipart/form-data" class="addEditProduct">
-            <input type="text" name="title" class="title" placeholder="${window.translation.title}">
+            <input type="text" name="title" class="title" placeholder="${window.translation.title}" value ="${titleValueInput}">
+            <div style="color:red" class="error title"></div>
             <br>
             <br>
-            <input type="text" name="description" class="description" placeholder="${window.translation.description}">
+            <input type="text" name="description" class="description" placeholder="${window.translation.description}" value ="${descriptionValueInput}">
+            <div style="color:red" class="error description"></div>
             <br>
             <br>
-            <input type="text" name="price" class="price" placeholder="${window.translation.price}">
+            <input type="text" name="price" class="price" placeholder="${window.translation.price}" value ="${priceValueInput}">
+            <div style="color:red" class="error price"></div>
             <br>
             <br>
-            <input type="file" name="image" id="file" class="inputFile">
+            <input type="file" name="image" id="file" class="file">
+            <div style="color:red" class="error file"></div>
             <br>
             <br>
-            <a href="#products">${window.translation.productsPage}</a>
-            <input type="submit" name="save" value="${window.translation.save}">
+            <a href="#products" class="products">${window.translation.productsPage}</a>
+            <button type="submit" name="save">${window.translation.save}</button>
         </form>
     </div>
     `;
+    return html;
+}
+
+function renderOrders(orders) {
+    html = [
+        `
+        <tr>
+        <th>${window.translation.id}</th>
+            <th>${window.translation.date}</th>
+            <th>${window.translation.name}</th>
+            <th>${window.translation.contactDetails}</th>
+            <th>${window.translation.comments}</th>
+            <th>${window.translation.actionViewOrder}</th>
+        </tr>
+    `,
+    ].join("");
+
+    $.each(orders, function (key, order) {
+        html += [`
+            <tr>
+                <td> ${order.id} </td>
+                <td>${order.date}</td>
+                <td>${order.name}</td>
+                <td>${order.contactDetails}</td>
+                <td>${order.comments}</td>
+                <td>
+                    <a href="#order/${order.id}" class="order">${window.translation.seeOrder}</a>
+                </td>
+            </tr>                        
+        `].join('');
+    });
+    
     return html;
 }

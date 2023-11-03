@@ -38,7 +38,24 @@
         <div class="buttons"></div>
     </div>
 
+    <!-- The product page -->
     <div class="page product"></div>
+    
+    <!-- The productEdit page -->
+    <div class="page productEdit"></div>
+
+    <!-- The orders page -->
+    <div class="page orders">
+        <table border="1" class="list"></table>
+        <a href="#products">Products</a>
+    </div>
+
+    <!-- The order page -->
+    <div class="page order">
+        <table border="1" class="list"></table>
+        <a href="#products">Products</a>
+    </div>
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
@@ -51,7 +68,10 @@
     <script src="{{ asset('scripts/login.js') }}"></script>
     <script src="{{ asset('scripts/logout.js') }}"></script>
     <script src="{{ asset('scripts/deleteProduct.js') }}"></script>
-    <script src="{{ asset('scripts/addEditProduct.js') }}"></script>
+    <script src="{{ asset('scripts/addProduct.js') }}"></script>
+    <script src="{{ asset('scripts/editProductTemplate.js') }}"></script>
+    <script src="{{ asset('scripts/editProduct.js') }}"></script>
+    <script src="{{ asset('scripts/viewOrder.js') }}"></script>
 
 </body>
 

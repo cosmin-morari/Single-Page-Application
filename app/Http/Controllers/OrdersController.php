@@ -20,11 +20,11 @@ class OrdersController extends Controller
         return $request->ajax() ? response()->json($data) : view('orders', ['data' => $data]);
     }
 
-    public function viewOrder($id)
+    public function viewOrder(Request $request, $id)
     {
         $order = Order::with('products')->findOrFail($id);
 
-        return view('order', ['order' => $order]);
+        return $request->ajax() ? response()->json($order) : view('order', ['order' => $order]);
     }
 
     public function checkout(Request $request)

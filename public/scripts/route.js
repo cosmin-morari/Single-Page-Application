@@ -93,6 +93,26 @@ $(document).ready(function () {
                     },
                 });
                 break;
+                case "#productEdit":
+                $(".productEdit").show();
+                break;
+                case "#orders":
+                $(".orders").show();
+                $.ajax({
+                    url: "orders",
+                    type: "GET",
+                    dataType: "json",
+                    headers: {
+                        accepts: "application/json",
+                    },
+                    success: function (response) {
+                        $(".orders .list").html(renderOrders(response));
+                    },
+                });
+                break;
+                case "#order":
+                $(".order").show();
+                break;
             default:
                 // If all else fails, always default to index
                 // Show the index page
