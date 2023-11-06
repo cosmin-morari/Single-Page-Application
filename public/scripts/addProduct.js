@@ -5,9 +5,12 @@ $("body").on("submit", ".addEditProduct", function (e) {
     data.append("title", $(".title").val());
     data.append("description", $(".description").val());
     data.append("price", $(".price").val());
+    
     jQuery.each(jQuery("#file")[0].files, function (i, file) {
         data.append("file", file);
     });
+
+    data.append("category", $(".category").val());
 
     $.ajax({
         url: url,
@@ -29,7 +32,6 @@ $("body").on("submit", ".addEditProduct", function (e) {
             if (response.message) {
                 $(".error").hide();
                 $("input").val("");
-                alert(response.message);
             }
         },
     });

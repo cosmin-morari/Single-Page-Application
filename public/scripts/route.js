@@ -96,11 +96,9 @@ $(document).ready(function () {
                     },
                 });
                 break;
-
             case "#productEdit":
                 $(".productEdit").show();
                 break;
-
             case "#orders":
                 $(".orders").show();
                 $.ajax({
@@ -115,11 +113,13 @@ $(document).ready(function () {
                     },
                 });
                 break;
-
             case "#order":
                 $(".order").show();
                 break;
 
+            case "#detailsProduct":
+                $(".detailsProduct").show();
+                break;
             default:
                 // If all else fails, always default to index
                 // Show the index page

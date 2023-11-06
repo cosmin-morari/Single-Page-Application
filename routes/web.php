@@ -46,3 +46,4 @@ Route::get('/singlePageApp', function(){
 })->name('singlePageApp');
 
 Route::get('/api/translation', [ProductController::class, 'translationWords'])->name('translation');
+Route::get('detailsProduct/{id}', [ProductController::class, 'detailsProduct'])->name('detailsProduct');

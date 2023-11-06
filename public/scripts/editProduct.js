@@ -1,13 +1,10 @@
 $("body").on("submit", ".addEditProduct", function (e) {
     e.preventDefault();
-    console.log($(this).serialize());
     let id = $(this)
         .attr("action")
         .substring($(this).attr("action").lastIndexOf("/") + 1);
 
-    console.log($(this).attr("method"));
     let url = $(this).attr("action").split("/")[0];
-    console.log(url);
 
     let data = new FormData();
 
@@ -19,6 +16,8 @@ $("body").on("submit", ".addEditProduct", function (e) {
         data.append("file", file);
     });
 
+    data.append("category", $(".category").val());
+        
     $.ajax({
         url: `${url}/${id}`,
         data: data,
@@ -31,7 +30,6 @@ $("body").on("submit", ".addEditProduct", function (e) {
             accepts: "application/json",
         },
         success: function (response) {
-            console.log(response);
             if (response.error) {
                 $.each(response.error, function (prefix, val) {
                     $(".error").show();

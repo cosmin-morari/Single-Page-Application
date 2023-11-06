@@ -102,6 +102,7 @@ class ProductController extends Controller
                 'title' => 'required',
                 'description' => 'required',
                 'price' => 'required|numeric',
+                'category' => 'required|string',
                 'file' => 'required|image'
             ]);
 
@@ -140,6 +141,7 @@ class ProductController extends Controller
                 'title' => $title,
                 'description' => $description,
                 'price' => $price,
+                'category' => $request->category,
                 'imageSource' => $newImageName
             ];
             $product->fill($data);
@@ -159,7 +161,8 @@ class ProductController extends Controller
                 'title' => 'required',
                 'description' => 'required',
                 'price' => 'required|integer',
-                'file' => 'required|image'
+                'file' => 'required|image',
+                'category' => 'required'
             ]);
 
             if (!$validator->passes()) {
@@ -174,12 +177,14 @@ class ProductController extends Controller
                     'title' => $request->title,
                     'description' => $request->description,
                     'price' => $request->price,
-                    'imageSource' => $newImageName
+                    'imageSource' => $newImageName,
+                    'category' => $request->category
                 ];
 
                 $product->fill($data);
                 $product->save();
-                return response()->json(['message' => 'The product has been successfully added.']);
+
+                return response()->json(['message' => $data]);
             }
         } else {
             $newImageName = time() . '-' . $request->title . '.' . $request->image->extension();
@@ -188,6 +193,7 @@ class ProductController extends Controller
                 'title' => $request->title,
                 'description' => $request->description,
                 'price' => $request->price,
+                'category' => $request->category,
                 'imageSource' => $newImageName
             ];
             $product->fill($data);
@@ -208,13 +214,33 @@ class ProductController extends Controller
         return $request->ajax() ? response()->json(['destination' => 'addProduct']) : view('product', ['destination' => 'addProduct']);
     }
 
+    public function detailsProduct(Request $request, $id)
+    {
+        
+        $product = Product::findOrFail($id);
+        $category = $product->category;
+        $sameCategoryproducts = Product::where('category', $category)->where('id', '!=', $id)->get();
+
+        
+        $pivot = $product->orders()->pivot;
+        $data = [
+            'product' => $product,
+            'sameCategoryproducts' => $sameCategoryproducts,
+            'pivot'=> $pivot
+        ];
+
+        return $request->ajax() ? response()->json($data) : view('product', ['product' => $product, 'destination' => 'editProduct']);
+    }
+
     public function translationWords()
     {
         $translate = [
             'action' => 'action',
             'actionViewOrder' => 'View Order',
+            'actionViewProduct' => 'Details Product',
             'add' => 'Add',
             'addProduct' => 'Add product',
+            'category' => 'Category',
             'cart' => 'Go to cart',
             'cartPage' => 'Cart',
             'checkout' => 'Checkout',
@@ -246,6 +272,7 @@ class ProductController extends Controller
             'price' => 'Price',
             'productsPage' => 'Products',
             'productPage' => 'Product',
+            'productsRecommended' => 'Products Recommended',
             'purchasedProducts' => 'Purchased Products',
             'setQuantity' => 'Set quantity',
             'save' => 'save',

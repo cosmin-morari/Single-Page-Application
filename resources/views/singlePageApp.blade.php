@@ -56,10 +56,21 @@
         <a href="#orders">Orders</a>
     </div>
 
+    <!-- The product details page -->
+    <div class="page detailsProduct">
+        <div class="content"></div>
+        <hr>
+        <div class="sameCategoryproducts">
+            <table border="1" class="list"></table>
+        </div>
+        <a href="#" class="button">Go to index</a>
+    </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
     <script src="{{ asset('scripts/translateWords.js') }}"></script>
     <script src="{{ asset('scripts/render.js') }}"></script>
+    <script src="{{ asset('scripts/detailsProduct.js') }}"></script>
     <script src="{{ asset('scripts/route.js') }}"></script>
     <script src="{{ asset('scripts/formAddDeleteToCart.js') }}"></script>
     <script src="{{ asset('scripts/updateQuantity.js') }}"></script>
@@ -71,7 +82,6 @@
     <script src="{{ asset('scripts/editProductTemplate.js') }}"></script>
     <script src="{{ asset('scripts/editProduct.js') }}"></script>
     <script src="{{ asset('scripts/viewOrder.js') }}"></script>
-
 </body>
 
 </html>

@@ -14,11 +14,12 @@ class Product extends Model
         'title',
         'description',
         'price',
-        'imageSource'
+        'imageSource',
+        'category',
     ];
 
     public function orders()
     {
-        return $this->belongsToMany(Order::class)->withTimestamps();
+        return $this->belongsToMany(Order::class)->withPivot('quantity')->withTimestamps();
     }
 }

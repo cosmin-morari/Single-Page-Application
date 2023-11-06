@@ -16,13 +16,18 @@ function renderList(products) {
     ].join("");
 
     $.each(products, function (key, product) {
-        let formAddDeleteToCartRoute =
-            window.location.hash == "#cart"
-                ? `cartCheckout/${product.id}`
-                : `addToCart/${product.id}`;
+        window.location.hash == "#cart"
+            ? `cartCheckout/${product.id}`
+            : `addToCart/${product.id}`;
         html += [
-            `<tr>
-                <td><img src="./storage/photos/${product.imageSource}"></td>
+            `<tr class="${product.title}">
+                <td><img src="./storage/photos/${
+                    product.imageSource
+                }"><a href="#detailsProduct" id="${
+                product.id
+            }" class="detailsProduct">${
+                window.translation.actionViewProduct
+            }</a></td>
                 <td>${product.title}</td>
                 <td>${product.description}</td>
                 <td>${product.price}</td>
@@ -91,6 +96,7 @@ function addEditProductTemplate(responseProduct, destination) {
         ? responseProduct.description
         : "";
     let priceValueInput = responseProduct ? responseProduct.price : "";
+    let categoryValueInput = responseProduct ? responseProduct.category : "";
 
     html = `
     <div class="container">
@@ -106,6 +112,10 @@ function addEditProductTemplate(responseProduct, destination) {
             <br>
             <input type="text" name="price" class="price" placeholder="${window.translation.price}" value ="${priceValueInput}">
             <div style="color:red" class="error price"></div>
+            <br>
+            <br>
+            <input type="text" name="category" class="category" placeholder="${window.translation.category}" value ="${categoryValueInput}">
+            <div style="color:red" class="error category"></div>
             <br>
             <br>
             <input type="file" name="image" id="file" class="file">
@@ -178,5 +188,45 @@ function rederOrder(order) {
             `,
         ].join("");
     });
+    return html;
+}
+
+function renderProduct(product) {
+    html = `
+    <h1>${product.title}</h1>
+    <h3>${product.category}</h3>
+    <img src="./storage/photos/${product.imageSource}"
+    <br>
+    <p>${product.description}</p>
+    `;
+    return html;
+}
+
+function renderRecommendedProducts(products) {
+    html = [
+        `
+        <h1>${window.translation.productsRecommended}</h1>
+        <tr>
+            <th>${window.translation.image}</th>
+            <th>${window.translation.title}</th>
+            <th>${window.translation.description}</th>
+            <th>${window.translation.price}</th>
+        </tr>
+    `,
+    ].join("");
+
+    $.each(products, function (key, product) {
+        html += [
+            `
+            <tr>
+                <td><img src="./storage/photos/${product.imageSource}"</td>
+                <td>${product.title}</td>
+                <td>${product.description}</td>
+                <td>${product.price}</td>
+            </tr>                        
+        `,
+        ].join("");
+    });
+
     return html;
 }
