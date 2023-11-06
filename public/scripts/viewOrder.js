@@ -1,6 +1,5 @@
-$("body").on("click", ".order", function (e) {
-    e.preventDefault();
-    let id = $(this).attr("href").split('/')[1];
+$("body").on("click", ".order", function () {
+    let id = $(this).attr("id");
     $.ajax({
         url: `order/${id}`,
         type: "GET",
@@ -11,7 +10,7 @@ $("body").on("click", ".order", function (e) {
             accepts: "application/json",
         },
         success: function (response) {
-            console.log(response)
+            $(".order .list").html(rederOrder(response.products));
         },
     });
 });

@@ -135,19 +135,48 @@ function renderOrders(orders) {
     ].join("");
 
     $.each(orders, function (key, order) {
-        html += [`
+        html += [
+            `
             <tr>
-                <td> ${order.id} </td>
+                <td>${order.id}</td>
                 <td>${order.date}</td>
                 <td>${order.name}</td>
                 <td>${order.contactDetails}</td>
                 <td>${order.comments}</td>
                 <td>
-                    <a href="#order/${order.id}" class="order">${window.translation.seeOrder}</a>
+                    <a href="#order" id=${order.id} class="order">${window.translation.seeOrder}</a>
                 </td>
             </tr>                        
-        `].join('');
+        `,
+        ].join("");
     });
-    
+
+    return html;
+}
+
+function rederOrder(order) {
+    html = [
+        `
+        <tr>
+            <th>${window.translation.image}</th>
+            <th>${window.translation.name}</th>
+            <th>${window.translation.yourQuantity}</th>
+            <th>${window.translation.totalPrice}</th>
+        </tr>
+    `,
+    ].join("");
+
+    $.each(order, function (key, value) {
+        html += [
+            `
+            <tr>
+                <td><img src="./storage/photos/${value.imageSource}"</td>
+                <td>${value.title}</td>
+                <td>${value.pivot.quantity}</td>
+                <td>${value.pivot.checkout_price * value.pivot.quantity}</td>
+                </tr>                        
+            `,
+        ].join("");
+    });
     return html;
 }

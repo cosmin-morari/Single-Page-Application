@@ -85,18 +85,23 @@ $(document).ready(function () {
                         if (response.sessionAdmin == false) {
                             $(".product").hide();
                             window.location.hash = "#login";
-                        }else{
+                        } else {
                             $(".product").html(
-                                addEditProductTemplate(null, response.destination)
+                                addEditProductTemplate(
+                                    null,
+                                    response.destination
+                                )
                             );
                         }
                     },
                 });
                 break;
-                case "#productEdit":
+
+            case "#productEdit":
                 $(".productEdit").show();
                 break;
-                case "#orders":
+
+            case "#orders":
                 $(".orders").show();
                 $.ajax({
                     url: "orders",
@@ -110,9 +115,11 @@ $(document).ready(function () {
                     },
                 });
                 break;
-                case "#order":
+
+            case "#order":
                 $(".order").show();
                 break;
+
             default:
                 // If all else fails, always default to index
                 // Show the index page
