@@ -12,7 +12,6 @@ $(document).ready(function () {
                 accepts: "application/json",
             },
             success: function (response) {
-                console.log(response)
                 $(".detailsProduct .content").html(renderProduct(response.product));
                 $(".detailsProduct .sameCategoryproducts .list").html(renderRecommendedProducts(response.sameCategoryproducts))
             },

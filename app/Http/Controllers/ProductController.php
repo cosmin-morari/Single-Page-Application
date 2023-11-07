@@ -219,14 +219,18 @@ class ProductController extends Controller
         
         $product = Product::findOrFail($id);
         $category = $product->category;
-        $sameCategoryproducts = Product::where('category', $category)->where('id', '!=', $id)->get();
-
-        
-        $pivot = $product->orders()->pivot;
+        $sameCategoryproducts = Product::with('orders')
+                                ->select('products.*')    
+                                ->where('category', $category)
+                                ->where('id', '!=', $id)
+                                ->selectRaw('(SELECT SUM(quantity) FROM order_product WHERE order_product.product_id=products.id) as total_quantity')
+                                ->orderBy('total_quantity','desc')
+                                ->limit(5)
+                                ->get();
+         
         $data = [
             'product' => $product,
-            'sameCategoryproducts' => $sameCategoryproducts,
-            'pivot'=> $pivot
+            'sameCategoryproducts' => $sameCategoryproducts
         ];
 
         return $request->ajax() ? response()->json($data) : view('product', ['product' => $product, 'destination' => 'editProduct']);
